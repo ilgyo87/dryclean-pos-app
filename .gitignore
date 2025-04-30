@@ -55,3 +55,8 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 .temp/
+
+# amplify
+.amplify
+amplify_outputs*
+amplifyconfiguration*

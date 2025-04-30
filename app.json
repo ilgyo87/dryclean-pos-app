@@ -1,4 +1,10 @@
 {
   "name": "dryclean-pos-app",
-  "slug": "dryclean-pos-app"
+  "slug": "dryclean-pos-app",
+  "android": {
+    "package": "com.expo_iggy.drycleanposapp"
+  },
+  "ios": {
+    "bundleIdentifier": "com.expo-iggy.drycleanposapp"
+  }
 }
