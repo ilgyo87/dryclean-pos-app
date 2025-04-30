@@ -1,9 +1,11 @@
 import React from "react";
-import { Button, View, StyleSheet, Dimensions, Platform } from "react-native";
+import { Button, View, StyleSheet, Dimensions, Platform, NativeModules } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import { Amplify } from "aws-amplify";
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react-native";
+import { useEffect } from "react";
+import { Text } from "react-native";
 
 import outputs from "../amplify_outputs.json";
 
@@ -11,7 +13,8 @@ Amplify.configure(outputs);
 
 // Get device dimensions for responsive design
 const { width, height } = Dimensions.get('window');
-const isTablet = width > 768; // Common breakpoint for tablets
+// Better iPad detection
+const isTablet = Platform.OS === 'ios' && Platform.isPad || (width > 768 && height > 500);
 
 const SignOutButton = () => {
   const { signOut } = useAuthenticator();
@@ -24,22 +27,46 @@ const SignOutButton = () => {
 };
 
 const App = () => {
+  // Re-calculate dimensions on component mount and layout changes
+  const [dimensions, setDimensions] = React.useState({ 
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height 
+  });
+
+  useEffect(() => {
+    console.log("Available native modules:", Object.keys(NativeModules));
+  }, []);
+
+  React.useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setDimensions({ width: window.width, height: window.height });
+    });
+    
+    return () => subscription?.remove();
+  }, []);
+
+  // Dynamically determine if tablet based on current dimensions
+  const currentIsTablet = Platform.OS === 'ios' && Platform.isPad || 
+                         (dimensions.width > 768 && dimensions.height > 500);
+
   return (
     <SafeAreaProvider>
       <Authenticator.Provider>
         <Authenticator>
-          <View style={[
+          <SafeAreaView style={[
             styles.container, 
-            isTablet && styles.tabletContainer
+            currentIsTablet && styles.tabletContainer
           ]}>
             <View style={[
               styles.contentContainer,
-              isTablet && styles.tabletContentContainer
+              currentIsTablet && styles.tabletContentContainer
             ]}>
-              {/* Your app content here */}
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text>Testing Native Modules</Text>
+              </View>
               <SignOutButton />
             </View>
-          </View>
+          </SafeAreaView>
         </Authenticator>
       </Authenticator.Provider>
     </SafeAreaProvider>
@@ -52,17 +79,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   tabletContainer: {
-    paddingHorizontal: 20,
+    flex: 1,
+    width: '100%',
   },
   contentContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 20,
   },
   tabletContentContainer: {
-    maxWidth: 1024,
     width: '100%',
     alignSelf: 'center',
+    // Removed maxWidth constraint to allow full tablet width
   },
   signOutButton: {
     position: 'absolute',

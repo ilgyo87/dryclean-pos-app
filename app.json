@@ -1,18 +1,22 @@
 {
-  "name": "dryclean-pos-app",
-  "slug": "dryclean-pos-app",
-  "android": {
-    "package": "com.expo_iggy.drycleanposapp"
-  },
-  "ios": {
-    "bundleIdentifier": "com.expo-iggy.drycleanposapp"
-  },
   "expo": {
     "name": "dryclean-pos-app",
     "slug": "dryclean-pos-app",
     "ios": {
       "bundleIdentifier": "com.expo-iggy.drycleanposapp",
       "supportsTablet": true
-    }
+    },
+    "android": {
+      "package": "com.expo_iggy.drycleanposapp"
+    },
+    "plugins": [
+      [
+        "@brother-bsc/react-native-printer-sdk",
+        {
+          "bluetoothPermission": "Allow this app to connect to Brother printers",
+          "locationPermission": "Allow this app to detect nearby printers"
+        }
+      ]
+    ]
   }
 }
