@@ -1,16 +1,9 @@
-// BrotherPrinter.m
+// BrotherPrinterModule.m
 #import <React/RCTBridgeModule.h>
 
-@interface RCT_EXTERN_MODULE(BrotherPrinter, NSObject)
+@interface RCT_EXTERN_MODULE(BrotherPrinterModule, NSObject)
 
-RCT_EXTERN_METHOD(searchPrinters:
-                  (RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject)
-
-RCT_EXTERN_METHOD(printLabel:(NSString *)printerIP
-                  text:(NSString *)text
-                  width:(nonnumber *)width
-                  height:(nonnumber *)height
+RCT_EXTERN_METHOD(printImageFromPath:(NSString *)imagePath
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 

@@ -1,140 +1,112 @@
 //
-//  BrotherPrinterService.swift
-//  YourXcodeProjectName
-//
-//  Created by Manus AI on [Date]
-//  Copyright © [Year] Your Company Name. All rights reserved.
+//  BrotherPrinterModule.swift
+//  drycleanposapp
 //
 
 import Foundation
-import BRLMPrinterKit // Import the Brother SDK framework
+import BRLMPrinterKit
+import React
 
-class BrotherPrinterService {
+@objc(BrotherPrinterModule)
+class BrotherPrinterModule: NSObject {
 
-    // --- Configuration ---
-    // Replace with your printer's actual IP address
-    let printerIPAddress = "YOUR_PRINTER_IP_ADDRESS" // e.g., "192.168.1.100"
-    // Specify the correct model for your printer
-    let printerModel: BRLMPrinterModel = .QL_820NWB
-    // Specify the correct label size you are using
-    let labelSize: BRLMQLPrintSettingsLabelSize = .rollW62 // Example: 62mm continuous roll. Check SDK for other sizes.
+    // Keep the service logic separate for clarity
+    private let printerService = BrotherPrinterService()
 
-    // --- Print Function ---
-    func printImage(imageURL: URL) {
-        print("Attempting to print image from URL: \(imageURL.path)")
+    // Expose a method to React Native
+    @objc
+    func printImageFromPath(_ imagePath: String,
+                           resolver resolve: @escaping RCTPromiseResolveBlock,
+                           rejecter reject: @escaping RCTPromiseRejectBlock) {
 
-        // 1. Create a communication channel (using Wi-Fi in this example)
-        let channel = BRLMChannel(wifiIPAddress: printerIPAddress)
+        // Convert the file path string to a URL
+        let imageURL = URL(fileURLWithPath: imagePath)
 
-        // 2. Open the channel and get the printer driver
-        let generateResult = BRLMPrinterDriverGenerator.open(channel)
-
-        // Check for channel opening errors (uses BRLMOpenChannelError)
-        guard generateResult.error.code == .noError, let printerDriver = generateResult.driver else {
-            print("Error - Open Channel: \(generateResult.error.code)")
-            // Use specific handler for open channel errors
-            handleOpenChannelError(generateResult.error)
-            return
-        }
-        print("Successfully opened channel to printer.")
-
-        // Ensure the driver is closed when the function exits
-        defer {
-            printerDriver.closeChannel()
-            print("Closed printer channel.")
-        }
-
-        // 3. Create Print Settings
-        guard let printSettings = BRLMQLPrintSettings(defaultPrintSettingsWith: printerModel) else {
-            print("Error - Could not create print settings for model: \(printerModel.rawValue)")
+        // Basic validation
+        guard FileManager.default.fileExists(atPath: imagePath) else {
+            let error = NSError(domain: "BrotherPrinterError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Image file not found at path: \(imagePath)"])
+            reject("FILE_NOT_FOUND", "Image file not found", error)
             return
         }
 
-        // Customize settings as needed:
-        printSettings.labelSize = labelSize
-        printSettings.autoCut = true
-        print("Configured print settings for label size: \(labelSize.rawValue)")
-
-        // 4. Print the image
-        print("Sending image to printer...")
-        // This function returns BRLMPrintError
-        let printError = printerDriver.printImage(with: imageURL, settings: printSettings)
-
-        // 5. Check for printing errors (uses BRLMPrintError)
-        if printError.code != .noError {
-            print("Error - Print Image: \(printError.code)")
-            // Use specific handler for print image errors
-            handlePrintImageError(printError)
-        } else {
-            print("Success - Print command sent to printer.")
-        }
-    }
-
-    // --- Error Handling Helper for Open Channel Errors ---
-    private func handleOpenChannelError(_ error: BRLMOpenChannelError) {
-        var errorMessage = "An unknown channel error occurred."
-        // Use BRLMOpenChannelErrorCode enum for switching
-        switch error.code {
-        case .noError:
-            errorMessage = "No error."
-        // Based on compiler suggestion context, ChannelTimeout seems likely for channel errors
-        case .ChannelTimeout: // Corrected based on compiler suggestion context
-            errorMessage = "Channel communication timeout."
-        case .printerNotFound:
-            errorMessage = "Printer not found at the specified address."
-        case .connectionError: // Generic connection error
-             errorMessage = "Cannot connect to the printer (check network, IP address, power)."
-        // ... add more cases based on BRLMOpenChannelErrorCode if needed ...
-        default:
-            errorMessage = "Opening channel failed with error code: \(error.code.rawValue)"
-        }
-        print("Open Channel Error Details: \(errorMessage)")
-        // Consider showing an alert to the user
-    }
-
-    // --- Error Handling Helper for Print Image Errors ---
-    private func handlePrintImageError(_ error: BRLMPrintError) {
-        var errorMessage = "An unknown printing error occurred."
-        // Use BRLMPrintErrorCode enum for switching
-        // Updated based on user's specific compiler errors
-        switch error.code {
-        case .noError:
-            errorMessage = "No error."
-        // Removed .timeout (invalid)
-        // Removed .badPaperSize (invalid)
-        // Removed .printerBusy (invalid)
-        case .PrinterStatusErrorCommunicationError: // Corrected based on compiler error
-            errorMessage = "Cannot communicate with the printer during printing."
-        // Removed .setInformationError (invalid)
-        // Removed .noPaper (invalid)
-        case .PrinterStatusErrorCoverOpen: // Corrected based on compiler error
-            errorMessage = "Printer cover is open."
-        case .wrongLabel: // Kept as it wasn't mentioned in errors
-             errorMessage = "Incorrect label type or size loaded."
-        // ... add more cases based on BRLMPrintErrorCode if needed ...
-        default:
-            // Provide the raw value for unhandled errors
-            errorMessage = "Printing failed with error code: \(error.code.rawValue)"
-        }
-        print("Printing Error Details: \(errorMessage)")
-        // Consider showing an alert to the user
-    }
-
-    // --- Example Usage (within a ViewController or similar) ---
-    /*
-    func triggerPrint() {
-        // Get the URL of the image you want to print
-        guard let imageURL = Bundle.main.url(forResource: "YourImageName", withExtension: "png") else {
-            print("Error: Image file not found in bundle.")
-            return
-        }
-
-        let printerService = BrotherPrinterService()
-
+        // Run printing on a background thread to avoid blocking the main React Native thread
         DispatchQueue.global(qos: .userInitiated).async {
-            printerService.printImage(imageURL: imageURL)
+            // --- Printing Logic using BrotherPrinterService ---
+            let channel = BRLMChannel(wifiIPAddress: self.printerService.printerIPAddress)
+            let generateResult = BRLMPrinterDriverGenerator.open(channel)
+
+            guard generateResult.error.code == .noError, let printerDriver = generateResult.driver else {
+                let errorCode = generateResult.error.code
+                let errorMessage = self.printerService.getOpenChannelErrorMessage(errorCode)
+                let error = NSError(domain: "BrotherPrinterError", code: Int(errorCode.rawValue), userInfo: [NSLocalizedDescriptionKey: errorMessage])
+                DispatchQueue.main.async {
+                    reject("CHANNEL_ERROR", errorMessage, error)
+                }
+                return
+            }
+
+            defer {
+                printerDriver.closeChannel()
+            }
+
+            guard let printSettings = BRLMQLPrintSettings(defaultPrintSettingsWith: self.printerService.printerModel) else {
+                let error = NSError(domain: "BrotherPrinterError", code: 2, userInfo: [NSLocalizedDescriptionKey: "Could not create print settings"])
+                DispatchQueue.main.async {
+                    reject("SETTINGS_ERROR", "Could not create print settings", error)
+                }
+                return
+            }
+
+            printSettings.labelSize = self.printerService.labelSize
+            printSettings.autoCut = true
+
+            let printError = printerDriver.printImage(with: imageURL, settings: printSettings)
+
+            if printError.code != .noError {
+                let errorCode = printError.code
+                let errorMessage = self.printerService.getPrintImageErrorMessage(errorCode)
+                let error = NSError(domain: "BrotherPrinterError", code: Int(errorCode.rawValue), userInfo: [NSLocalizedDescriptionKey: errorMessage])
+                DispatchQueue.main.async {
+                    reject("PRINT_ERROR", errorMessage, error)
+                }
+            } else {
+                // Successfully sent print command
+                DispatchQueue.main.async {
+                    resolve("Print command sent successfully")
+                }
+            }
         }
     }
-    */
+
+    // Required main queue setup method for React Native modules
+    @objc
+    static func requiresMainQueueSetup() -> Bool {
+        return true
+    }
 }
 
+// The BrotherPrinterService class needs to be in the same file
+class BrotherPrinterService {
+    let printerIPAddress = "YOUR_PRINTER_IP_ADDRESS" // TODO: Replace with actual IP
+    let printerModel: BRLMPrinterModel = .QL_820NWB
+    let labelSize: BRLMQLPrintSettingsLabelSize = .rollW62
+
+    // Updated error handling functions to return strings
+    func getOpenChannelErrorMessage(_ code: BRLMOpenChannelErrorCode) -> String {
+        switch code {
+        case .noError: return "No error."
+        // Add valid cases based on SDK documentation or further testing
+        default: return "Opening channel failed with error code: \(code.rawValue)"
+        }
+    }
+
+    func getPrintImageErrorMessage(_ code: BRLMPrintErrorCode) -> String {
+        switch code {
+        case .noError: return "No error."
+        case .printerStatusErrorCommunicationError: return "Cannot communicate with the printer during printing."
+        case .printerStatusErrorCoverOpen: return "Printer cover is open."
+        // Add other valid cases based on SDK documentation or further testing
+        default: return "Printing failed with error code: \(code.rawValue)"
+        }
+    }
+}
