@@ -8,15 +8,6 @@
     },
     "android": {
       "package": "com.expo_iggy.drycleanposapp"
-    },
-    "plugins": [
-      [
-        "@brother-bsc/react-native-printer-sdk",
-        {
-          "bluetoothPermission": "Allow this app to connect to Brother printers",
-          "locationPermission": "Allow this app to detect nearby printers"
-        }
-      ]
-    ]
+    }
   }
 }

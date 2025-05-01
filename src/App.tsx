@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, View, StyleSheet, Dimensions, Platform, NativeModules } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import BrotherPrinterTest from "./BrotherPrinterTest";
 
 import { Amplify } from "aws-amplify";
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react-native";
@@ -61,8 +62,10 @@ const App = () => {
               styles.contentContainer,
               currentIsTablet && styles.tabletContentContainer
             ]}>
-              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text>Testing Native Modules</Text>
+              {/* Brother Printer Test UI */}
+              <View style={{ flex: 1, width: '100%' }}>
+                <Text style={{ textAlign: 'center', marginBottom: 8 }}>Testing Native Modules</Text>
+                <BrotherPrinterTest />
               </View>
               <SignOutButton />
             </View>
