@@ -1,3 +1,4 @@
+// src/BrotherPrinterTest.tsx
 import React, { useState } from 'react';
 import { View, Text, Button, FlatList, TextInput, StyleSheet, Alert } from 'react-native';
 import BrotherPrinter from './modules/BrotherPrinter';
@@ -13,9 +14,12 @@ export default function BrotherPrinterTest() {
   const searchPrinters = async () => {
     setLoading(true);
     try {
+      console.log('Searching for printers...');
       const result = await BrotherPrinter.searchPrinters();
+      console.log('Search result:', result);
       setPrinters(result.printers || []);
     } catch (err) {
+      console.error('Search error:', err);
       Alert.alert('Error', err?.message || 'Failed to search for printers');
     } finally {
       setLoading(false);
@@ -29,6 +33,7 @@ export default function BrotherPrinterTest() {
     }
     setLoading(true);
     try {
+      console.log('Printing label...');
       const success = await BrotherPrinter.printLabel(
         selectedPrinter.ipAddress,
         labelText,
@@ -41,6 +46,7 @@ export default function BrotherPrinterTest() {
         Alert.alert('Failure', 'Failed to print label.');
       }
     } catch (err) {
+      console.error('Print error:', err);
       Alert.alert('Error', err?.message || 'Failed to print label');
     } finally {
       setLoading(false);
