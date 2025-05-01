@@ -74,17 +74,14 @@ class BrotherPrinterService {
     private func handleOpenChannelError(_ error: BRLMOpenChannelError) {
         var errorMessage = "An unknown channel error occurred."
         // Use BRLMOpenChannelErrorCode enum for switching
+        // Updated based on user's specific compiler errors (previous cases were invalid)
         switch error.code {
         case .noError:
             errorMessage = "No error."
-        // Based on compiler suggestion context, ChannelTimeout seems likely for channel errors
-        case .ChannelTimeout: // Corrected based on compiler suggestion context
-            errorMessage = "Channel communication timeout."
-        case .printerNotFound:
-            errorMessage = "Printer not found at the specified address."
-        case .connectionError: // Generic connection error
-             errorMessage = "Cannot connect to the printer (check network, IP address, power)."
-        // ... add more cases based on BRLMOpenChannelErrorCode if needed ...
+        // Removed .ChannelTimeout (invalid)
+        // Removed .printerNotFound (invalid)
+        // Removed .connectionError (invalid)
+        // Add other valid cases from BRLMOpenChannelErrorCode if known or needed
         default:
             errorMessage = "Opening channel failed with error code: \(error.code.rawValue)"
         }
@@ -100,18 +97,12 @@ class BrotherPrinterService {
         switch error.code {
         case .noError:
             errorMessage = "No error."
-        // Removed .timeout (invalid)
-        // Removed .badPaperSize (invalid)
-        // Removed .printerBusy (invalid)
-        case .PrinterStatusErrorCommunicationError: // Corrected based on compiler error
+        case .printerStatusErrorCommunicationError: // Corrected case based on compiler error
             errorMessage = "Cannot communicate with the printer during printing."
-        // Removed .setInformationError (invalid)
-        // Removed .noPaper (invalid)
-        case .PrinterStatusErrorCoverOpen: // Corrected based on compiler error
+        case .printerStatusErrorCoverOpen: // Corrected case based on compiler error
             errorMessage = "Printer cover is open."
-        case .wrongLabel: // Kept as it wasn't mentioned in errors
-             errorMessage = "Incorrect label type or size loaded."
-        // ... add more cases based on BRLMPrintErrorCode if needed ...
+        // Removed .wrongLabel (invalid)
+        // Add other valid cases from BRLMPrintErrorCode if known or needed
         default:
             // Provide the raw value for unhandled errors
             errorMessage = "Printing failed with error code: \(error.code.rawValue)"

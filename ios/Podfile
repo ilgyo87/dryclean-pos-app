@@ -65,12 +65,15 @@ target 'drycleanposapp' do
     :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] != 'false',
   )
 
-  # Use the local podspec for your Brother Printer Module
-  # Ensure BrotherPrinterModule.podspec correctly links BRLMPrinterKit.xcframework using s.vendored_frameworks
-  # Remember to uncomment this if you commented it out for testing
-  pod 'BrotherPrinterModule', :path => 'BrotherPrinterModule.podspec'
-
   post_install do |installer|
+    installer.pods_project.targets.each do |target|
+      if target.name == 'BrotherPrinterModule'
+        target.build_configurations.each do |config|
+          config.build_settings['HEADER_SEARCH_PATHS'] ||= ['$(inherited)']
+          config.build_settings['HEADER_SEARCH_PATHS'] << '${PODS_ROOT}/../../node_modules/brother-printer-module/ios'
+        end
+      end
+    end
     react_native_post_install(
       installer,
       config[:reactNativePath],

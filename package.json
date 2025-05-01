@@ -11,7 +11,7 @@
     "reinstall": "npm install --legacy-peer-deps",
     "derive": "rm -rf ~/Library/Developer/Xcode/DerivedData",
     "podremove": "rm -rf ios/build ios/Pods ios/Podfile.lock",
-    "podinstall": "cd ios && pod install && cd .."
+    "podinstall": "cd ios && pod install --repo-update && cd .."
   },
   "dependencies": {
     "@aws-amplify/react-native": "^1.1.9",
