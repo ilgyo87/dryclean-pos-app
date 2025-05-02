@@ -13,10 +13,34 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
+    "infoPlist": {
+      "NSLocalNetworkUsageDescription": "This app needs access to your local network to discover and communicate with Brother printers.",
+      "NSBonjourServices": [
+        "_ipp._tcp",
+        "_printer._tcp",
+        "_http._tcp"
+      ],
+      "NSBluetoothAlwaysUsageDescription": "This app uses Bluetooth to connect to Brother printers.",
+      "NSBluetoothPeripheralUsageDescription": "This app uses Bluetooth to connect to Brother printers.",
+      "NSCameraUsageDescription": "This app uses the camera to scan QR codes for printer setup."
+    },
       "supportsTablet": true,
       "bundleIdentifier": "com.expo-iggy.drycleanposapp"
     },
     "android": {
+    "permissions": [
+      "INTERNET",
+      "ACCESS_WIFI_STATE",
+      "CHANGE_WIFI_STATE",
+      "BLUETOOTH",
+      "BLUETOOTH_ADMIN",
+      "BLUETOOTH_CONNECT",
+      "BLUETOOTH_SCAN",
+      "BLUETOOTH_ADVERTISE",
+      "ACCESS_COARSE_LOCATION",
+      "ACCESS_FINE_LOCATION",
+      "CAMERA"
+    ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

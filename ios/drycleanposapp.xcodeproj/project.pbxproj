@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,23 +11,44 @@
 		1EA8DC7789D3DA297AACDA43 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B31F2E4694C0C6B16C5DEEDA /* PrivacyInfo.xcprivacy */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		D82F0FD2382C96AE6486C071 /* libPods-drycleanposapp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EEEFCFA489F0724451EF917E /* libPods-drycleanposapp.a */; };
+		DC3EDE5D2DC53AC5004B967C /* BRLMPrinterKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC0E7D982DC5323F004CA5AE /* BRLMPrinterKit.xcframework */; };
+		DC3EDE5E2DC53AC5004B967C /* BRLMPrinterKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DC0E7D982DC5323F004CA5AE /* BRLMPrinterKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DC8EE0352DC53FD600A0F023 /* BrotherPrinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8EE0332DC53FD600A0F023 /* BrotherPrinter.swift */; };
+		DC8EE0362DC53FD600A0F023 /* BrotherPrinterBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = DC8EE0342DC53FD600A0F023 /* BrotherPrinterBridge.m */; };
+		DCC9CBD6E3C2946E988D978D /* Pods_drycleanposapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A4FDC9466FB9113941D2075 /* Pods_drycleanposapp.framework */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 		FB0FAF518CA375262B46BC58 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1662465E76676761B58F26BB /* ExpoModulesProvider.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DC3EDE5F2DC53AC5004B967C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DC3EDE5E2DC53AC5004B967C /* BRLMPrinterKit.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		13B07F961A680F5B00A75B9A /* drycleanposapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = drycleanposapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = drycleanposapp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = drycleanposapp/Info.plist; sourceTree = "<group>"; };
 		1662465E76676761B58F26BB /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-drycleanposapp/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		6A4FDC9466FB9113941D2075 /* Pods_drycleanposapp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_drycleanposapp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9A79908270E246271066A82 /* Pods-drycleanposapp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-drycleanposapp.release.xcconfig"; path = "Target Support Files/Pods-drycleanposapp/Pods-drycleanposapp.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = drycleanposapp/SplashScreen.storyboard; sourceTree = "<group>"; };
 		B31F2E4694C0C6B16C5DEEDA /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = drycleanposapp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		DC0E7D982DC5323F004CA5AE /* BRLMPrinterKit.xcframework */ = {isa = PBXFileReference; expectedSignature = "AppleDeveloperProgram:5HCL85FLGW:Brother Industries, LTD."; lastKnownFileType = wrapper.xcframework; name = BRLMPrinterKit.xcframework; path = ../../bpsdkiall4120/bpsdki4120/libs/BT_Net/BRLMPrinterKit.xcframework; sourceTree = "<group>"; };
+		DC8EE0332DC53FD600A0F023 /* BrotherPrinter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrotherPrinter.swift; sourceTree = "<group>"; };
+		DC8EE0342DC53FD600A0F023 /* BrotherPrinterBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BrotherPrinterBridge.m; sourceTree = "<group>"; };
 		EA4DB529A41D50C0846967EF /* Pods-drycleanposapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-drycleanposapp.debug.xcconfig"; path = "Target Support Files/Pods-drycleanposapp/Pods-drycleanposapp.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		EEEFCFA489F0724451EF917E /* libPods-drycleanposapp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-drycleanposapp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = drycleanposapp/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* drycleanposapp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "drycleanposapp-Bridging-Header.h"; path = "drycleanposapp/drycleanposapp-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -37,7 +58,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D82F0FD2382C96AE6486C071 /* libPods-drycleanposapp.a in Frameworks */,
+				DC3EDE5D2DC53AC5004B967C /* BRLMPrinterKit.xcframework in Frameworks */,
+				DCC9CBD6E3C2946E988D978D /* Pods_drycleanposapp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -47,6 +69,8 @@
 		13B07FAE1A68108700A75B9A /* drycleanposapp */ = {
 			isa = PBXGroup;
 			children = (
+				DC8EE0332DC53FD600A0F023 /* BrotherPrinter.swift */,
+				DC8EE0342DC53FD600A0F023 /* BrotherPrinterBridge.m */,
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
 				F11748442D0722820044C1D9 /* drycleanposapp-Bridging-Header.h */,
 				BB2F792B24A3F905000567C9 /* Supporting */,
@@ -61,8 +85,9 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DC0E7D982DC5323F004CA5AE /* BRLMPrinterKit.xcframework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				EEEFCFA489F0724451EF917E /* libPods-drycleanposapp.a */,
+				6A4FDC9466FB9113941D2075 /* Pods_drycleanposapp.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -146,6 +171,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
 				CB6FD031B572B67D0F7ED5DB /* [CP] Embed Pods Frameworks */,
+				DC3EDE5F2DC53AC5004B967C /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -318,6 +344,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
+				DC8EE0352DC53FD600A0F023 /* BrotherPrinter.swift in Sources */,
+				DC8EE0362DC53FD600A0F023 /* BrotherPrinterBridge.m in Sources */,
 				FB0FAF518CA375262B46BC58 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -440,6 +468,17 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric/React_Fabric.framework/Headers/react/renderer/components/view/platform/cxx",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
@@ -499,6 +538,17 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric/React_Fabric.framework/Headers/react/renderer/components/view/platform/cxx",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
