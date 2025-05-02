@@ -69,9 +69,9 @@
 		13B07FAE1A68108700A75B9A /* drycleanposapp */ = {
 			isa = PBXGroup;
 			children = (
+				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
 				DC8EE0332DC53FD600A0F023 /* BrotherPrinter.swift */,
 				DC8EE0342DC53FD600A0F023 /* BrotherPrinterBridge.m */,
-				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
 				F11748442D0722820044C1D9 /* drycleanposapp-Bridging-Header.h */,
 				BB2F792B24A3F905000567C9 /* Supporting */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
