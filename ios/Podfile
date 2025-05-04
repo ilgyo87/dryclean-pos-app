@@ -16,6 +16,8 @@ prepare_react_native_project!
 target 'drycleanposapp' do
   use_frameworks! :linkage => :static
   use_expo_modules!
+  # Add your Pods here
+  pod 'BRLMPrinterKit', :path => '/Users/iggy/coding_projects/dryclean-pos-app/dryclean-pos-app/ios/LocalPackages/BRLMPrinterKit'
 
   if ENV['EXPO_USE_COMMUNITY_AUTOLINKING'] == '1'
     config_command = ['node', '-e', "process.argv=['', '', 'config'];require('@react-native-community/cli').run()"];

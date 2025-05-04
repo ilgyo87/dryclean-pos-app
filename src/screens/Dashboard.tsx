@@ -7,7 +7,14 @@ import {
   getDummyPrinters,
   getLastError,
   printSample,
-  printToIP
+  printToIP,
+  search,
+  addListener,
+  BrotherPrintEvents,
+  BRLMPrinterPort,
+  BRLMPrinterModelName,
+  BRLMPrinterLabelName,
+  printImage
 } from '../services/BrotherPrinter';
 
 
@@ -17,8 +24,44 @@ const Dashboard = () => {
   const [dummyPrinters, setDummyPrinters] = useState<any[]>([]);
   const [ipInput, setIpInput] = useState<string>('');
   const [showIpPrompt, setShowIpPrompt] = useState<'check'|'print'|null>(null);
+  const [discoveredPrinters, setDiscoveredPrinters] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const listenerHandles = React.useRef<any[]>([]);
 
-  // Handler for dummy printers
+  // No searchListener or setSearchListener needed
+  React.useEffect(() => {
+    // Add event listeners for print events and discovery
+    listenerHandles.current.push(
+      addListener(BrotherPrintEvents.PRINT_SUCCESS, () => {
+        setResult(r => r + '\n[onPrint] Print succeeded');
+      })
+    );
+    listenerHandles.current.push(
+      addListener(BrotherPrintEvents.PRINT_ERROR, info => {
+        setResult(r => r + `\n[onPrintError] ${JSON.stringify(info)}`);
+      })
+    );
+    listenerHandles.current.push(
+      addListener(BrotherPrintEvents.PRINT_FAILED_COMMUNICATION, info => {
+        setResult(r => r + `\n[onPrintFailedCommunication] ${JSON.stringify(info)}`);
+      })
+    );
+    listenerHandles.current.push(
+      addListener(BrotherPrintEvents.PRINTER_AVAILABLE, printer => {
+        setDiscoveredPrinters(prev => {
+          if (prev.some(p => p.channelInfo === printer.channelInfo)) return prev;
+          return [...prev, printer];
+        });
+        setResult(r => r + `\n[onPrinterAvailable] ${printer.modelName} (${printer.channelInfo})`);
+      })
+    );
+    return () => {
+      listenerHandles.current.forEach(h => h?.remove?.());
+      listenerHandles.current = [];
+    };
+  }, []);
+
+  // Handler for dummy printers (dev only)
   const handleListDummyPrinters = async () => {
     setResult('');
     try {
@@ -29,6 +72,37 @@ const Dashboard = () => {
       setResult('Error loading dummy printers: ' + (e as any)?.message || String(e));
     }
   };
+
+  // Handler for network printer discovery
+  const handleSearchPrinters = async () => {
+    setResult('');
+    setDiscoveredPrinters([]);
+    setIsSearching(true);
+    // Add a temporary listener for this search session
+    const listener = addListener(BrotherPrintEvents.PRINTER_AVAILABLE, (printer: any) => {
+      setDiscoveredPrinters(prev => {
+        // Avoid duplicates by IP
+        if (prev.some(p => p.channelInfo === printer.channelInfo)) return prev;
+        return [...prev, printer];
+      });
+    });
+    listenerHandles.current.push(listener);
+    try {
+      await search({ port: BRLMPrinterPort.WIFI, searchDuration: 10 });
+      setResult('Searching for network printers...');
+      // End search after 12 seconds
+      setTimeout(() => {
+        setIsSearching(false);
+        if (listener) listener.remove();
+        setResult('Network printer search finished.');
+      }, 12000);
+    } catch (e) {
+      setIsSearching(false);
+      if (listener) listener.remove();
+      setResult('Network printer search failed: ' + (e as any)?.message || String(e));
+    }
+  };
+
 
   // Handler for printSample
   const handlePrintSample = async () => {
@@ -74,48 +148,14 @@ const Dashboard = () => {
     }
   };
 
-  // Direct print test that bypasses the service layer
-  const handleDirectPrintTest = () => {
-    setResult('');
-    try {
-      // Log the BrotherPrinter module
-      const brotherPrinter = NativeModules.BrotherPrinter;
-      console.log('BrotherPrinter direct access:', brotherPrinter);
-      console.log('Available methods:', brotherPrinter ? Object.keys(brotherPrinter) : 'No methods');
-      
-      if (!brotherPrinter) {
-        setResult('ERROR: BrotherPrinter native module not found');
-        return;
-      }
-      
-      if (!brotherPrinter.printSample) {
-        setResult('ERROR: printSample method not available on BrotherPrinter module');
-        return;
-      }
-      
-      // Try to print directly
-      setResult('Attempting direct print...');
-      brotherPrinter.printSample()
-        .then((result: string) => {
-          console.log('Print result:', result);
-          setResult('DIRECT PRINT SUCCESS: ' + result);
-        })
-        .catch((error: any) => {
-          console.error('Print error:', error);
-          setResult('DIRECT PRINT ERROR: ' + (error?.message || String(error)));
-        });
-    } catch (e) {
-      console.error('Exception in direct print test:', e);
-      setResult('EXCEPTION: ' + (e as any)?.message || String(e));
-    }
-  };
+
 
   // Render IP prompt
   const renderIpPrompt = () => (
     <View style={styles.promptOverlay}>
       <View style={styles.promptBox}>
-        <Text style={styles.promptTitle}>{showIpPrompt === 'check' ? 'Check Printer Connection' : 'Print to IP'}</Text>
-        <Text style={{marginBottom: 8}}>Enter Printer IP Address:</Text>
+        <Text style={styles.promptTitle}>{showIpPrompt === 'check' ? 'Check Printer Connection (WiFi/IP)' : 'Print to Printer (WiFi/IP)'}</Text>
+        <Text style={{marginBottom: 8}}>Enter Printer IP Address (e.g. 192.168.1.100):</Text>
         <View style={{flexDirection:'row',alignItems:'center'}}>
           <TextInput
             style={{
@@ -179,32 +219,63 @@ const Dashboard = () => {
           <Text style={styles.menuItemText}>Reports</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={handlePrintSample}>
-          <Text style={styles.menuItemText}>Print Test</Text>
+          <Text style={styles.menuItemText}>Print Test Sample (WiFi/IP)</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.menuItem, styles.directTestButton]} onPress={handleDirectPrintTest}>
-          <Text style={[styles.menuItemText, {color: 'white'}]}>Direct Print Test</Text>
+        <TouchableOpacity style={styles.menuItem} onPress={async () => {
+          if (discoveredPrinters.length === 0) {
+            setResult(r => r + '\nNo discovered printer to print to.');
+            return;
+          }
+          const printer = discoveredPrinters[0];
+          const defaultPrintSettings = {
+            modelName: BRLMPrinterModelName.QL_820NWB,
+            labelName: BRLMPrinterLabelName.RollW62,
+            encodedImage: 'base64 removed mime-type', // TODO: Replace with actual base64 image
+            numberOfCopies: 1,
+            autoCut: true,
+            port: printer.port,
+            channelInfo: printer.channelInfo,
+          };
+          setResult(r => r + `\nSending print job to ${printer.modelName} (${printer.channelInfo})...`);
+          try {
+            await printImage(defaultPrintSettings);
+          } catch (e) {
+            setResult(r => r + `\nprintImage error: ${(e as any)?.message || String(e)}`);
+          }
+        }}>
+          <Text style={styles.menuItemText}>Print Sample to First Printer</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={handleListDummyPrinters}>
-          <Text style={styles.menuItemText}>List Dummy Printers</Text>
+
+        <TouchableOpacity style={styles.menuItem} onPress={handleSearchPrinters} disabled={isSearching}>
+          <Text style={styles.menuItemText}>{isSearching ? 'Searching...' : 'Find Network Printers'}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => {setIpInput('');setShowIpPrompt('check');}}>
-          <Text style={styles.menuItemText}>Check Printer Connection</Text>
+          <Text style={styles.menuItemText}>Check Printer Connection (WiFi/IP)</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => {setIpInput('');setShowIpPrompt('print');}}>
-          <Text style={styles.menuItemText}>Print to IP</Text>
+          <Text style={styles.menuItemText}>Print to Printer (WiFi/IP)</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={handleGetLastError}>
           <Text style={styles.menuItemText}>Show Last Error</Text>
         </TouchableOpacity>
       </View>
 
-      {dummyPrinters.length > 0 && (
+      {discoveredPrinters.length > 0 && (
         <View style={styles.printerListBox}>
-          <Text style={{fontWeight:'bold',marginBottom:4}}>Dummy Printers:</Text>
-          {dummyPrinters.map((printer,i) => (
-            <Text key={i} style={{fontSize:14}}>
-              {printer.model} ({printer.ipAddress}) SN: {printer.serialNumber} [{printer.nodeName}]
-            </Text>
+          <Text style={{fontWeight:'bold',marginBottom:4}}>Discovered Network Printers:</Text>
+          {discoveredPrinters.map((printer, i) => (
+            <TouchableOpacity
+              key={i}
+              onPress={() => {
+                setIpInput(printer.channelInfo);
+                setShowIpPrompt('print');
+              }}
+              style={{paddingVertical: 6}}
+            >
+              <Text style={{fontSize:14, color:'#34495e'}}>
+                {printer.modelName} ({printer.channelInfo}) SN: {printer.serialNumber} [{printer.nodeName}]
+              </Text>
+            </TouchableOpacity>
           ))}
         </View>
       )}
@@ -333,9 +404,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#34495e',
   },
-  directTestButton: {
-    backgroundColor: '#e74c3c',
-  },
+
 });
 
 export default Dashboard;

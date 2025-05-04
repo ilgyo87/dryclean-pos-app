@@ -45,19 +45,21 @@
       <true/>
     </dict>
     <key>NSBluetoothAlwaysUsageDescription</key>
-    <string>This app uses Bluetooth to connect to Brother printers.</string>
+    <string>【Why use Bluetooth for your app.】</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
-    <string>This app uses Bluetooth to connect to Brother printers.</string>
+    <string>【Why use Bluetooth for your app.】</string>
     <key>NSBonjourServices</key>
     <array>
-      <string>_ipp._tcp</string>
+      <string>_pdl-datastream._tcp</string>
       <string>_printer._tcp</string>
-      <string>_http._tcp</string>
+      <string>_ipp._tcp</string>
     </array>
+    <key>UISupportedExternalAccessoryProtocols</key>
+    <string>com.brother.ptcbp</string>
     <key>NSCameraUsageDescription</key>
     <string>This app uses the camera to scan QR codes for printer setup.</string>
     <key>NSLocalNetworkUsageDescription</key>
-    <string>This app needs access to your local network to discover and communicate with Brother printers.</string>
+    <string>【Why use WiFi for your app.】</string>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
